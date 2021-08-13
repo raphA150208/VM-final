@@ -1,6 +1,3 @@
-require "thor"
-require "pry"
-
 class Drink
   attr_reader :name, :price
   def initialize(name, price)
@@ -30,13 +27,18 @@ class VendingMachine
     @total_money = 0
     @sale_amount = 0
     @stocks = {}
-    @stocks.default = 0 # こうしておくと値が存在しないときnilではなく0になる
+    @stocks.default = 0 
     @drinks = {}
 
-    store(Drink.cola, 5) # せっかく入れるメソッドがあるので使いましょう
+    store(Drink.cola, 5)
     store(Drink.water, 5)
     store(Drink.redbull, 5)
+    p "a:"
+    p @drinks   #"a:" {:cola=>#<Drink:0x00007fd20b1baeb0 @name="cola", @price=120>, :water=>#<Drink:0x00007fd20b1bae60 @name="water", @price=100>, :redbull=>#<Drink:0x00007fd20b1bae10 @name="redbull", @price=200>}
+    p "b:"
+    p @stocks   #"b:" {:cola=>5, :water=>5, :redbull=>5}
   end
+
 
   def insert(money)
     if MONEY.include?(money)
@@ -54,11 +56,11 @@ class VendingMachine
     @total_money = 0
   end
 
-  def enough_money?(drink) # お金が足りる
+  def enough_money?(drink)
     @total_money >= drink.price
   end
 
-  def in_stock?(drink) # 在庫がある
+  def in_stock?(drink)
     @stocks[drink.name.to_sym] > 0
   end
 
@@ -76,20 +78,19 @@ class VendingMachine
     end
   end
 
-  def drink_stocks # 格納されているジュースの情報。customerではこれを使う
-    @drinks.map do |key, drink|
-      {drink: drink, stock: @stocks[key]}
-    end
-  end
-
   def store(drink, num)
     @stocks[drink.name.to_sym] += num
-    @drinks[drink.name.to_sym] = drink # Drink自体もここで入れる
-    # ただし、名前が同じで価格が違うDrinkを作ってしまうとおかしくなるので注意
+    @drinks[drink.name.to_sym] = drink 
+    p "c:"
+    p @stocks
+    p "d:"
+    p @drinks
   end
 
-  def find_drink_by_index(index) # 番号からDrinkオブジェクトを探す
+  def find_drink_by_index(index) 
     @drinks.values[index]
+    p "e:"
+    p @drinks
   end
 
   def find_drink_by_name(name) # 名前からDrinkオブジェクトを探す

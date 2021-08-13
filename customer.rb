@@ -1,5 +1,3 @@
-#require "thor"
-#require "pry"
 require_relative 'kawamurasan'
 require_relative 'customer_method'
 
