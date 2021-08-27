@@ -27,28 +27,24 @@ class VendingMachine
     @total_money = 0
     @sale_amount = 0
     @stocks = {}
-    @stocks.default = 0 
+    @stocks.default = 0
     @drinks = {}
 
     store(Drink.cola, 5)
     store(Drink.water, 5)
     store(Drink.redbull, 5)
-    p "a:"
-    p @drinks   #"a:" {:cola=>#<Drink:0x00007fd20b1baeb0 @name="cola", @price=120>, :water=>#<Drink:0x00007fd20b1bae60 @name="water", @price=100>, :redbull=>#<Drink:0x00007fd20b1bae10 @name="redbull", @price=200>}
-    p "b:"
-    p @stocks   #"b:" {:cola=>5, :water=>5, :redbull=>5}
   end
 
-
-  def insert(money)
+  def insert(money) #C-14
     if MONEY.include?(money)
       @total_money += money
     end
   end
 
-  def buy(drink)
+  def buy(drink) #C-20
     @total_money -= drink.price
     @stocks[drink.name.to_sym] -= 1
+
     @sale_amount += drink.price
   end
 
@@ -62,16 +58,20 @@ class VendingMachine
 
   def in_stock?(drink)
     @stocks[drink.name.to_sym] > 0
+
   end
 
   def purchasable?(drink)
-    enough_money?(drink) && in_stock?(drink)
+    enough_money?(drink) && in_stock?(drink) #K-59~64
+    # binding.irb
+
   end
 
   def purchasable_drink_list
     @drinks.each_value do |drink|
-      if purchasable?(drink)
+      if purchasable?(drink) #K-64~68
         puts "#{drink.name}を買えます"
+
       else
         puts "#{drink.name}を買えません"
       end
@@ -80,17 +80,11 @@ class VendingMachine
 
   def store(drink, num)
     @stocks[drink.name.to_sym] += num
-    @drinks[drink.name.to_sym] = drink 
-    p "c:"
-    p @stocks
-    p "d:"
-    p @drinks
+    @drinks[drink.name.to_sym] = drink
   end
 
-  def find_drink_by_index(index) 
+  def find_drink_by_index(index)
     @drinks.values[index]
-    p "e:"
-    p @drinks
   end
 
   def find_drink_by_name(name) # 名前からDrinkオブジェクトを探す
@@ -98,3 +92,29 @@ class VendingMachine
   end
 end
 
+def buy_process(number)
+  drink = @vm.find_drink_by_index(number - 1) #K-90~92
+  if @vm.total_money < drink.price #AK-45
+    puts "お金が足りません"
+    exit
+  elsif @vm.stocks[drink.name.to_sym] == 0 #AK-38
+    puts "#{drink.name}の在庫がありません"
+    exit
+  else
+    @vm.buy(drink) #K-49~53
+    puts 'ガチャン！コーラをお買い上げいただきありがとうございます'
+    puts "残り#{@vm.total_money}円分購入可能です"
+  end
+end
+
+def insert_money_process
+  puts 'お金を入れてください'
+  money = gets.to_i
+  unless MONEY.include?(money)
+    puts "#{money}円はこの自動販機では利用できません"
+    exit
+  else
+    @vm.insert(money) #K-44~48
+    puts "#{money}円自動販売機に入れました"
+  end
+end
