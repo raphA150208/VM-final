@@ -8,15 +8,15 @@ class Drink
   # 以下3つは、ショートカットとしてあってもよい
   # 定数でもいいかも WATER = self.new('water', 100)
   def self.water
-    self.new('water', 100)
+    self.new('ウォーター', 100)
   end
 
   def self.cola
-    self.new('cola', 120)
+    self.new('コーラ', 120)
   end
 
   def self.redbull
-    self.new('redbull', 200)
+    self.new('レッドブル', 200)
   end
 end
 
@@ -43,27 +43,26 @@ class VendingMachine
 
   def buy(drink) #C-20
     @total_money -= drink.price
-    @stocks[drink.name.to_sym] -= 1
+    @stocks[drink.name] -= 1 
 
     @sale_amount += drink.price
   end
 
-  def return_money
+  def return_money #担当おつり
     @total_money = 0
   end
 
-  def enough_money?(drink)
-    @total_money >= drink.price
+  def enough_money?(drink) #残金
+    @total_money >= drink.price #投入金額
   end
 
   def in_stock?(drink)
-    @stocks[drink.name.to_sym] > 0
+    @stocks[drink.name] > 0
 
   end #K70~79
 
   def purchasable?(drink)
     enough_money?(drink) && in_stock?(drink) #K-55~62
-    # binding.irb
 
   end
 
@@ -79,8 +78,8 @@ class VendingMachine
   end #C-32
 
   def store(drink, num)
-    @stocks[drink.name.to_sym] += num
-    @drinks[drink.name.to_sym] = drink
+    @stocks[drink.name] += num
+    @drinks[drink.name] = drink
   end
 
   def find_drink_by_index(index)
@@ -88,7 +87,7 @@ class VendingMachine
   end
 
   def find_drink_by_name(name) # 名前からDrinkオブジェクトを探す
-    @drinks[name.to_sym]
+    @drinks[name]
   end
 end
 
@@ -97,12 +96,12 @@ def buy_process(number)
   if @vm.total_money < drink.price #AK-45
     puts "お金が足りません"
     exit
-  elsif @vm.stocks[drink.name.to_sym] == 0 #AK-46
+  elsif @vm.stocks[drink.name] == 0 #AK-46
     puts "#{drink.name}の在庫がありません"
     exit
   else
     @vm.buy(drink) #K-44~49
-    puts 'ガチャン！コーラをお買い上げいただきありがとうございます'
+    puts "#{drink.name}をお買い上げいただきありがとうございます"
     puts "残り#{@vm.total_money}円分購入可能です"
   end
 end
