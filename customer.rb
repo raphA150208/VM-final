@@ -1,6 +1,6 @@
 require_relative 'masterk'
 
-MONEY = [10, 50, 100, 500, 1000]
+MONEY = [10, 50, 100, 500, 1000, 10000]
 @vm = VendingMachine.new  #K-9~25
 puts 'いらっしゃい！！'
 puts '1:飲み物を買う'
