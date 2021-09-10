@@ -9,13 +9,13 @@ number = gets.to_i
 if number == 2
   puts'バイバイ'
 elsif number == 1
-  insert_money_process #K-121~131
+  @vm.insert_money_process #K-121~131
   while true
     puts '何を飲む？'
     puts '1:コーラ'
     puts '2:お水'
     puts '3:レッドブル'
-    drink_number = gets.to_i
+    @vm.drink_number = gets.to_i
     buy_process(drink_number) #K-133~149
     puts 'もう一本買っちゃえよ！'
     puts '1:買う'
@@ -33,7 +33,7 @@ elsif number == 1
       puts '2:いいえ'
       number = gets.to_i
       if number == 1
-        insert_money_process #C-14
+        @vm.insert_money_process #C-14
       end
     end
   end

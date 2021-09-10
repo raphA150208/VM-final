@@ -116,34 +116,35 @@ class VendingMachine
   def find_drink_by_name(name) 
     @items[name]
   end
-end
 
-def insert_money_process 
-  puts 'お金を入れてね'
-  money = gets.to_i
-  unless MONEY.include?(money)
-    puts "#{money}円は利用できないんだよゴメンね"
-    exit
-  else
-    @vm.insert(money) #K27-31
-    puts "#{money}円入ったよ"
+  def insert_money_process 
+    puts 'お金を入れてね'
+    money = gets.to_i
+    unless MONEY.include?(money)
+      puts "#{money}円は利用できないんだよゴメンね"
+      exit
+    else
+      insert(money) #K27-31
+      puts "#{money}円入ったよ"
+    end
+  end
+  
+  def buy_process(number)
+    drink = find_drink_by_index(number - 1) #K-112-114
+    if total_money < drink.price 
+      puts "お金が足りないよ"
+      exit
+    elsif stocks[drink.name] == 0 #AK-46
+      puts "#{drink.name}の在庫がなくなちゃった！ゴメン"
+      exit
+    else
+      buy(drink) #K-44~49
+      return if redbull_count >= 4
+      return_str = rand(1..3)
+      puts "翼を授ける〜〜！！\n゜.+ε(・ω・｀*)з゜+゜.+ε(・ω・｀*)з゜+" if return_str == 3 && number == 3
+  
+      puts "#{drink.name}美味しいよね！\n\n残り#{total_money}円分購入できるよ"
+    end
   end
 end
 
-def buy_process(number)
-  drink = @vm.find_drink_by_index(number - 1) #K-112-114
-  if @vm.total_money < drink.price 
-    puts "お金が足りないよ"
-    exit
-  elsif @vm.stocks[drink.name] == 0 #AK-46
-    puts "#{drink.name}の在庫がなくなちゃった！ゴメン"
-    exit
-  else
-    @vm.buy(drink) #K-44~49
-    return if @vm.redbull_count >= 4
-    return_str = rand(1..3)
-    puts "翼を授ける〜〜！！\n゜.+ε(・ω・｀*)з゜+゜.+ε(・ω・｀*)з゜+" if return_str == 3 && number == 3
-
-    puts "#{drink.name}美味しいよね！\n\n残り#{@vm.total_money}円分購入できるよ"
-  end
-end
