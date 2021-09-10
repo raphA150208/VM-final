@@ -1,3 +1,4 @@
+#改良版
 class Drink
   attr_reader :name, :price
   def initialize(name, price)
@@ -30,14 +31,12 @@ class VendingMachine
     @stocks.default = 0
     @items = {}
 
-    cola1 = Drink.new('コーラ', 120)
-    water1 = Drink.new('ウォーター', 100)
-    redbull1 = Drink.new('レッドブル', 200)
-    
-    @bought = {"コーラ" => 0, "ウォーター" => 0, "レッドブル" => 0} #購入したドリンクの記録
-    @continuing = [] #前回購入したドリンクの空配列
-    store(cola1, 5)
-    store(water1, 5)
+    cola1 = Drink.new('コーラ', 10)
+    water1 = Drink.new('ウォーター', 10)
+    redbull1 = Drink.new('レッドブル', 10)
+    @bought_redbull = {"レッドブル" => 0} #購入したドリンクの記録
+    store(cola1, 10)
+    store(water1, 10)
     store(redbull1, 10)
   end
 
@@ -48,20 +47,32 @@ class VendingMachine
   end
 
   def buy(drink) #C-20
-    @total_money -= drink.price
-    @stocks[drink.name] -= 1 
-    @bought[drink.name] += 1 #購入したドリンク（kye）+1
-    
-    if @continuing.last == drink.name || @continuing.count == 0 #もし最後に購入したドリンク名が一緒であれば ||または最初の購入であれば
-      #.last配列で配列の最後の要素取り出す 
-      @continuing << drink.name #continuing配列の中（最後）に入る
+    if drink.name == "レッドブル"
+      @bought_redbull["レッドブル"] += 1 #購入したドリンク（kye）+1
     else
-      @continuing = []
+      @bought_redbull.store("レッドブル", 0)
     end
-    puts "3連続購入ありがとう！！！" if @continuing.count == 3 #conのインスタンス変数が連続3の場合 puts表示
+    if (drink.name == "レッドブル") && (@bought_redbull["レッドブル"] >= 4)
+      puts 'お断りします'
+      puts '　　お断りします'
+      puts '　　　ハハ ハハ'
+      puts '　　 (ﾟωﾟ)ﾟωﾟ)'
+      puts '　　／　　＼　 ＼'
+      puts '((⊂ ) 　ﾉ＼つﾉ＼つ)'
+      puts '　　 (＿⌒ヽ ⌒ヽ'
+      puts '　　 ヽ　ﾍ |　ﾍ |'
+      puts 'εﾆ三 ﾉノ Ｊノ Ｊ'
+    else
+      @total_money -= drink.price
+      @stocks[drink.name] -= 1
+      @sale_amount += drink.price
+    end
 
-    @sale_amount += drink.price
+    def redbull_count
+      @bought_redbull["レッドブル"]
+    end
   end
+
 
   def return_money #担当おつり
     @total_money = 0
@@ -95,7 +106,6 @@ class VendingMachine
   def store(drink, num)
     @stocks[drink.name] += num
     @items[drink.name] = drink
-    binding.irb
   end
 
   def find_drink_by_index(index)
@@ -117,6 +127,7 @@ def buy_process(number)
     exit
   else
     @vm.buy(drink) #K-44~49
+    return if @vm.redbull_count >= 4
     return_str = rand(1..3)
     puts "翼を授ける〜〜！！\n゜.+ε(・ω・｀*)з゜+゜.+ε(・ω・｀*)з゜+" if return_str == 3 && number == 3
 
