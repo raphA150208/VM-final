@@ -15,8 +15,8 @@ elsif number == 1
     puts '1:コーラ'
     puts '2:お水'
     puts '3:レッドブル'
-    @vm.drink_number = gets.to_i
-    buy_process(drink_number) #K-133~149
+    drink_number = gets.to_i
+    @vm.buy_process(drink_number) #K-133~149
     puts 'もう一本買っちゃえよ！'
     puts '1:買う'
     puts '2:もういらない'

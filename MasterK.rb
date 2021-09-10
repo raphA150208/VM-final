@@ -134,7 +134,7 @@ class VendingMachine
     if total_money < drink.price 
       puts "お金が足りないよ"
       exit
-    elsif stocks[drink.name] == 0 #AK-46
+    elsif @stocks[drink.name] == 0 #AK-46
       puts "#{drink.name}の在庫がなくなちゃった！ゴメン"
       exit
     else
