@@ -7,7 +7,7 @@ class Drink
 end
 
 class VendingMachine
-  attr_reader :total_money, :sale_amount, :stocks, :drinks, :bought, :continuing
+  attr_reader :total_money, :sale_amount, :stocks, :cola, :water, :redbull
   def initialize
     @total_money = 0
     @sale_amount = 0
@@ -18,23 +18,24 @@ class VendingMachine
     cola = Drink.new('コーラ', 120)
     water = Drink.new('ウォーター', 100)
     redbull = Drink.new('レッドブル', 200)
-    @consecutive_redbull = {"レッドブル" => 0} 
-    store(cola, 10)
-    store(water, 10)
-    store(redbull, 10)
-  end
+    @consecutive_redbull = {"レッドブル" => 0}
+    store(cola, 5)
+    store(water, 5)
+    store(redbull, 5)
+  end #C5
 
-  def insert(money) #C-13
+  def insert(money)
     if MONEY.include?(money)
       @total_money += money
     end
-  end
+  end #C-13
 
   def buy(drink) #C-20
     if drink.name == "レッドブル"
-      @consecutive_redbull["レッドブル"] += 1 
-    else
-      @consecutive_redbull.store("レッドブル", 0)
+      @consecutive_redbull["レッドブル"] += 1
+    # else
+    #   @consecutive_redbull.store("レッドブル", 0)
+    #   binding.irb
     end
     if (drink.name == "レッドブル") && (@consecutive_redbull["レッドブル"] >= 4)
       refuse = rand(1..3)
@@ -65,22 +66,22 @@ class VendingMachine
         puts '　 し⌒'
       end
     else
-      @total_money -= drink.price 
+      @total_money -= drink.price
       @stocks[drink.name] -= 1
       @sale_amount += drink.price
-    end
+    end #K144
 
-    def redbull_count
-      @consecutive_redbull["レッドブル"]
-    end
+    # def redbull_count
+    #   @consecutive_redbull["レッドブル"]
+    # end
   end
 
-  def return_money 
+  def return_money
     @total_money = 0
   end
 
-  def enough_money?(drink) 
-    @total_money >= drink.price 
+  def enough_money?(drink)
+    @total_money >= drink.price
   end
 
   def in_stock?(drink)
@@ -113,11 +114,11 @@ class VendingMachine
     @items.values[index]
   end
 
-  def find_drink_by_name(name) 
+  def find_drink_by_name(name)
     @items[name]
   end
 
-  def insert_money_process 
+  def insert_money_process
     puts 'お金を入れてね'
     money = gets.to_i
     unless MONEY.include?(money)
@@ -128,23 +129,23 @@ class VendingMachine
       puts "#{money}円入ったよ"
     end
   end
-  
+
   def buy_process(number)
     drink = find_drink_by_index(number - 1) #K-112-114
-    if total_money < drink.price 
+    if total_money < drink.price
       puts "お金が足りないよ"
       exit
     elsif @stocks[drink.name] == 0 #AK-46
       puts "#{drink.name}の在庫がなくなちゃった！ゴメン"
       exit
     else
-      buy(drink) #K-44~49
-      return if redbull_count >= 4
+      buy(drink) #K-33~71
+      return if @consecutive_redbull["レッドブル"] >= 4
       return_str = rand(1..3)
       puts "翼を授ける〜〜！！\n゜.+ε(・ω・｀*)з゜+゜.+ε(・ω・｀*)з゜+" if return_str == 3 && number == 3
-  
+
       puts "#{drink.name}美味しいよね！\n\n残り#{total_money}円分購入できるよ"
     end
-  end
+  end #C-20
 end
 
